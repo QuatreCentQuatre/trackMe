@@ -139,8 +139,7 @@
 	 */
 	proto.setOptions = function(options) {
 		var $scope = this;
-		var settings = $.extend({}, defaults);
-		settings = $.extend(settings, options);
+		var settings = $.extend({}, defaults, options);
 		$.each(settings, function(index, value) {
 			if ($.inArray(index, overwriteKeys) != -1) {
 				$scope[index] = value;
@@ -175,7 +174,6 @@
 	 */
 	proto.__initialize = function() {
 		var $scope = this;
-		if (this.debug) {console.info(this.dname, "__initialize");}
 		$(document).ready(function() {
 			var $body  = $('body');
 			$body.on('click', 'a[me\\:track\\:outbound], [me\\:track\\:event]', function(e) {
@@ -274,6 +272,6 @@
 
 	/* Create Me reference if does'nt exist */
 	if(!window.Me){window.Me = {};}
-	/* Initiate TrackMe to make it a Singleton */
-	window.Me.track = new TrackMe();
+	/* Initiate to make a Singleton */
+	window.Me.track = new TrackMe({test:"asd"});
 }(jQuery, window, document));
