@@ -273,5 +273,5 @@
 	/* Create Me reference if does'nt exist */
 	if(!window.Me){window.Me = {};}
 	/* Initiate to make a Singleton */
-	window.Me.track = new TrackMe({test:"asd"});
+	window.Me.track = new TrackMe();
 }(jQuery, window, document));
