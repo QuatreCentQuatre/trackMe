@@ -12,9 +12,9 @@ Library that let you easily track.
 
 ### Supported Libraries
 
-**google analytics old tag**
-**google analytics new universal tag**
-**google tag manager (only for event)**
+- google analytics old tag
+- google analytics new universal tag
+- google tag manager (only for event)
 
 ---
 
