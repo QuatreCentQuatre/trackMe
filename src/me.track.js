@@ -1,6 +1,10 @@
 /*
  * TrackMe from the MeLibs
  * Library that let you easily track
+ *
+ * Version :
+ *  - 1.0.1
+ *
  * Supported Libraries :
  * 	- google analytics old tag
  *  - google analytics new universal tag
@@ -177,8 +181,8 @@
 		$(document).ready(function() {
 			var $body  = $('body');
 			$body.on('click', 'a[me\\:track\\:outbound], [me\\:track\\:event]', function(e) {
-				e.preventDefault();
 				var $el = $(e.currentTarget);
+                if ($el.attr('me:track:outbound')) {e.preventDefault();}
 				privatesMethods.handleClick.call($scope, $el);
 			});
 		});
