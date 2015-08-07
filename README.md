@@ -1,6 +1,20 @@
-#trackMe 1.0.1
+#trackMe
 
 Library that let you easily track.
+
+---
+
+### Version
+
+**1.0.1**
+
+---
+
+### Supported Libraries
+
+**google analytics old tag**
+**google analytics new universal tag**
+**google tag manager (only for event)**
 
 ---
 
