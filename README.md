@@ -20,7 +20,7 @@ Library that let you easily track.
 
 ### Dependencies
 
-**jQuery-1.10 ++** (http://jquery.com/download/)
+- **jQuery-1.10 ++** (http://jquery.com/download/)
 
 ---
 

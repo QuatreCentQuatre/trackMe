@@ -1,5 +1,5 @@
 /*
- * TrackMe from the MeLibs
+ * trackMe from the MeLibs
  * Library that let you easily track
  *
  * Version :
@@ -23,6 +23,7 @@
  *  - social
  *  - event
  *  - outbound
+ *  - toString
  */
 
 (function($, window, document, undefined) {
