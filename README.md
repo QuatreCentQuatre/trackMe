@@ -1,4 +1,4 @@
-#trackMe
+#TrackMe
 
 Library that let you easily track.
 
@@ -6,7 +6,7 @@ Library that let you easily track.
 
 ### Version
 
-**1.0.1**
+**1.0.2**
 
 ---
 
