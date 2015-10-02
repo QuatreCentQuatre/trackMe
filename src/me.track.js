@@ -1,9 +1,9 @@
 /*
- * trackMe from the MeLibs
+ * TrackMe from the MeLibs
  * Library that let you easily track
  *
  * Version :
- *  - 1.0.1
+ *  - 1.0.2
  *
  * Supported Libraries :
  * 	- google analytics old tag
@@ -11,10 +11,7 @@
  *  - google tag manager (only for event)
  *
  * Dependencies :
- *  - Jquery
- *
- * Private Methods :
- *	- handleClick
+ *  - jQuery (https://jquery.com/)
  *
  * Public Methods :
  *  - setOptions
@@ -23,45 +20,26 @@
  *  - social
  *  - event
  *  - outbound
- *  - toString
+ *
+ * Private Methods :
+ *	- handleClick
  */
 
 (function($, window, document, undefined) {
 	"use strict";
+
 	/* Private Variables */
-	var instanceID   = 1;
-	var instanceName = "TrackMe";
-	var defaults     = {
+	var instanceID      = 1;
+	var instanceName    = "TrackMe";
+	var defaults        = {
 		debug: true
 	};
-	var overwriteKeys = [
+	var overwriteKeys   = [
 		'debug'
 	];
 
 	/* Private Methods */
 	var privatesMethods = {};
-
-	/**
-	 *
-	 * handleClick
-	 * this will be called when you click on a binded link
-	 *
-	 * @param   $el  the jquery element will be pass
-	 * @return  void
-	 * @access  private
-	 */
-	privatesMethods.handleClick = function($el) {
-		var cat    = $el.attr('me:track:category');
-		var action = ($el.attr('me:track:action')) ? $el.attr('me:track:action') : 'click';
-		var label  = ($el.attr('me:track:label')) ? $el.attr('me:track:label') : '';
-		if (!cat) {console.warn('Need to set attribute: "me:track:category" on %o', $el); return;}
-
-		if ($el.attr('me:track:outbound') != undefined) {
-			this.outbound(cat, action, label, $el.attr('href'));
-		} else if ($el.attr('me:track:event') != undefined) {
-			this.event(cat, action, label);
-		}
-	};
 
 	/* Builder Method */
 	var TrackMe = function(options) {
@@ -70,33 +48,38 @@
 
 	var proto = TrackMe.prototype;
 
-	proto.debug       = null;
-	proto.id          = null;
-	proto.name        = null;
-	proto.dname       = null;
-	proto.options     = null;
-	proto.baseUrl     = window.location.protocol + "//" + window.location.host + "/";
+    /* Private Variables */
+    proto.__id          = null;
+    proto.__name        = null;
+    proto.__debugName   = null;
+
+    /* Publics Variables */
+    proto.debug         = null;
+    proto.options       = null;
+	proto.baseUrl       = window.location.protocol + "//" + window.location.host + "/";
 
 	/**
 	 *
 	 * __construct
 	 * the first method that will be executed.
 	 *
-	 * @param   options  all the options that you need
-	 * @return  object    null || scope
+	 * @param   options     all the options that you need
+	 * @return  object      null || scope
 	 * @access  private
 	 */
 	proto.__construct = function(options) {
-		this.id    = instanceID;
-		this.name  = instanceName;
-		this.dname = this.name + ":: ";
+        this.__id        = instanceID;
+        this.__name      = instanceName;
+        this.__debugName = this.__name + " :: ";
+
 		this.setOptions(options);
 
-		if (!this.__validateDependencies()) {return null;}
-		if (!this.__validateOptions()) {return null;}
-		instanceID ++;
+        if (!this.__validateDependencies()) {return null;}
+        if (!this.__validateOptions()) {return null;}
 
+		instanceID ++;
 		this.__initialize();
+
 		return this;
 	};
 
@@ -111,10 +94,12 @@
 	 */
 	proto.__validateDependencies = function() {
 		var isValid = true;
+
 		if (!window.jQuery) {
 			isValid = false;
-			console.warn(this.dname + "You need jquery");
+            if (this.debug) {console.warn(this.__debugName + "required jQuery (https://jquery.com/)");}
 		}
+
 		return isValid;
 	};
 
@@ -129,8 +114,61 @@
 	 */
 	proto.__validateOptions = function() {
 		var isValid = true;
+
 		return isValid;
 	};
+
+    /**
+     *
+     * __initialize
+     * set the basics
+     *
+     * @return  object scope
+     * @access  private
+     *
+     */
+    proto.__initialize = function() {
+        var scope = this;
+
+        $(document).ready(function() {
+            var $body = $('body');
+
+            $body.on('click', 'a[me\\:track\\:outbound], [me\\:track\\:event]', function(e) {
+                var $el = $(e.currentTarget);
+
+                if ($el.attr('me:track:outbound')) {e.preventDefault();}
+                privatesMethods.handleClick.call(scope, $el);
+            });
+        });
+
+        return this;
+    };
+
+    /**
+     *
+     * handleClick
+     * this will be called when you click on a binded link
+     *
+     * @param   $el         the jQuery element will be pass
+     * @return  void
+     * @access  private
+     */
+    privatesMethods.handleClick = function($el) {
+        var cat    = $el.attr('me:track:category');
+        var action = ($el.attr('me:track:action')) ? $el.attr('me:track:action') : 'click';
+        var label  = ($el.attr('me:track:label')) ? $el.attr('me:track:label') : '';
+
+        if (!cat) {
+            if (this.debug) {console.warn(this.__debugName + 'need to set attribute: "me:track:category" on %o', $el);}
+            return;
+        }
+
+        if ($el.attr('me:track:outbound') != undefined) {
+            this.outbound(cat, action, label, $el.attr('href'));
+        } else if ($el.attr('me:track:event') != undefined) {
+            this.event(cat, action, label);
+        }
+    };
 
 	/**
 	 *
@@ -142,18 +180,21 @@
 	 * @access  public
 	 *
 	 */
-	proto.setOptions = function(options) {
-		var $scope = this;
-		var settings = $.extend({}, defaults, options);
-		$.each(settings, function(index, value) {
-			if ($.inArray(index, overwriteKeys) != -1) {
-				$scope[index] = value;
-				delete settings[index];
-			}
-		});
-		this.options = settings;
-		return this;
-	};
+    proto.setOptions = function(options) {
+        var scope    = this;
+        var settings = (this.options) ? $.extend({}, this.options, options) : $.extend({}, defaults, options);
+
+        $.each(settings, function(index, value) {
+            if ($.inArray(index, overwriteKeys) != -1) {
+                scope[index] = value;
+                delete settings[index];
+            }
+        });
+
+        this.options = settings;
+
+        return this;
+    };
 
 	/**
 	 *
@@ -170,28 +211,6 @@
 
 	/**
 	 *
-	 * __initialize
-	 * set the basics
-	 *
-	 * @return  object scope
-	 * @access  private
-	 *
-	 */
-	proto.__initialize = function() {
-		var $scope = this;
-		$(document).ready(function() {
-			var $body  = $('body');
-			$body.on('click', 'a[me\\:track\\:outbound], [me\\:track\\:event]', function(e) {
-				var $el = $(e.currentTarget);
-                if ($el.attr('me:track:outbound')) {e.preventDefault();}
-				privatesMethods.handleClick.call($scope, $el);
-			});
-		});
-		return this;
-	};
-
-	/**
-	 *
 	 * page
 	 * send a pageview event
 	 *
@@ -200,13 +219,14 @@
 	 *
 	 */
 	proto.page = function(url) {
-		if (this.debug) {console.info(this.dname, "pageview :: " + url);}
+		if (this.debug) {console.info(this.__debugName, "pageview :: " + url);}
 
 		if (window._gaq) {
 			_gaq.push(['_trackPageview', url]);
 		} else if (window.ga) {
 			ga('send', 'pageview', url);
 		}
+
 		return this;
 	};
 
@@ -221,13 +241,15 @@
 	 */
 	proto.social = function(network, action, targetURL) {
 		var newTargetURL = targetURL.replace(this.baseUrl, '');
-		if (this.debug) {console.info(this.dname, "social :: {network:'" + network + "', action:'" + action + "', url:'" + newTargetURL + "'}");}
+
+		if (this.debug) {console.info(this.__debugName, "social :: {network:'" + network + "', action:'" + action + "', url:'" + newTargetURL + "'}");}
 
 		if (window._gaq) {
 			_gaq.push(['_trackSocial', network, action, newTargetURL]);
 		} else if (window.ga) {
 			ga('send', 'social', network, action, newTargetURL);
 		}
+
 		return this;
 	};
 
@@ -241,7 +263,9 @@
 	 *
 	 */
 	proto.event = function(category, action, label, callback) {
-		if (!callback) {if (this.debug) {console.info(this.dname, "event :: {category:'" + category + "', action:'" + action + "', label:'" + label + "'}");}}
+		if (!callback) {
+            if (this.debug) {console.info(this.__debugName, "event :: {category:'" + category + "', action:'" + action + "', label:'" + label + "'}");}
+        }
 
 		if (window.dataLayer) {
 			dataLayer.push({'event': 'GAEvent', 'eventCategory': category, 'eventAction': action, 'eventLabel': label});
@@ -252,6 +276,7 @@
 			if (callback) {ga('send', 'event', category, action, label, {'hitCallback':callback});}
 			else {ga('send', 'event', category, action, label);}
 		}
+
 		return this;
 	};
 
@@ -265,18 +290,22 @@
 	 *
 	 */
 	proto.outbound = function(category, action, label, url) {
-		if (this.debug) {console.info(this.dname, "outbound :: {category:'" + category + "', action:'" + action + "', label:'" + label + "', redirectUrl:'" + url + "'}");}
+		if (this.debug) {console.info(this.__debugName, "outbound :: {category:'" + category + "', action:'" + action + "', label:'" + label + "', redirectUrl:'" + url + "'}");}
 
-		this.event(category, action, label, function(){document.location = url;});
+		this.event(category, action, label, function() {
+            document.location = url;
+        });
+
 		return this;
 	};
 
-	proto.toString = function(){
+	proto.toString = function() {
 		return "[" + this.name + "]";
 	};
 
-	/* Create Me reference if does'nt exist */
-	if(!window.Me){window.Me = {};}
-	/* Initiate to make a Singleton */
-	window.Me.track = new TrackMe();
+    /* Create Me reference if does'nt exist */
+    if (!window.Me) {window.Me = {};}
+
+	/*  */
+	Me.track = new TrackMe();
 }(jQuery, window, document));
