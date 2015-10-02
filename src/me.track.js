@@ -300,7 +300,7 @@
 	};
 
 	proto.toString = function() {
-		return "[" + this.name + "]";
+		return "[" + this.__name + "]";
 	};
 
     /* Create Me reference if does'nt exist */
