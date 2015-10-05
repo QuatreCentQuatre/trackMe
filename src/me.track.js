@@ -23,6 +23,9 @@
  *
  * Private Methods :
  *	- handleClick
+ *
+ * Updates Needed :
+ *  -
  */
 
 (function($, window, document, undefined) {
@@ -75,7 +78,7 @@
 		this.setOptions(options);
 
         if (!this.__validateDependencies()) {return null;}
-        if (!this.__validateOptions()) {return null;}
+        if (!this.__validateArguments()) {return null;}
 
 		instanceID ++;
 		this.__initialize();
@@ -105,14 +108,14 @@
 
 	/**
 	 *
-	 * __validateOptions
+	 * __validateArguments
 	 * Will check if you got all the required options needed to use that plugins
 	 *
 	 * @return  boolean
 	 * @access  private
 	 *
 	 */
-	proto.__validateOptions = function() {
+	proto.__validateArguments = function() {
 		var isValid = true;
 
 		return isValid;
