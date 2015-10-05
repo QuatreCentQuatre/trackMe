@@ -11,7 +11,7 @@
  *  - google tag manager (only for event)
  *
  * Dependencies :
- *  - jQuery (https://jquery.com/)
+ *  - jQuery (http://jquery.com/download/)
  *
  * Public Methods :
  *  - setOptions
@@ -100,7 +100,7 @@
 
 		if (!window.jQuery) {
 			isValid = false;
-            if (this.debug) {console.warn(this.__debugName + "required jQuery (https://jquery.com/)");}
+            if (this.debug) {console.warn(this.__debugName + "required jQuery (http://jquery.com/download/)");}
 		}
 
 		return isValid;
