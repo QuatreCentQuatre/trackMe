@@ -270,7 +270,12 @@
             if (this.debug) {console.info(this.__debugName, "event :: {category:'" + category + "', action:'" + action + "', label:'" + label + "'}");}
         }
 
-		if (window.dataLayer) {
+		if(gtag){
+			gtag('event', action, {
+				'event_category': category,
+				'event_label': label
+			});
+		} else if (window.dataLayer) {
 			dataLayer.push({'event': 'GAEvent', 'eventCategory': category, 'eventAction': action, 'eventLabel': label});
 		} else if (window._gaq) {
 			if (callback) {_gaq.push(['_trackEvent', category, action, label, {'hitCallback':callback}]);}
