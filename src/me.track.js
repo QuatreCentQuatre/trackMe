@@ -68,7 +68,7 @@ class TrackMe {
     }
 
     /**
-     * @desc Push to dataLayer mrTrack event with data taken from me:track:data attribute
+     * @desc Push to dataLayer meTrack event with data taken from me:track:data attribute
      * @param e
      * @private
      */
