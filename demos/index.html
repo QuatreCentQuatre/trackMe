@@ -1,23 +1,17 @@
 <html>
 <head>
     <!-- JS vendors -->
-    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
     <script src="../src/me.track.js"></script>
 
     <!-- JS demo file -->
     <script src="js/app.main.js"></script>
 </head>
 <body>
-    <a href="/" me:track:outbound me:track:category="test" me:track:label="link">Outbound link with no action</a><!-- by default me:track:action="click" -->
-    <a href="http://google.com" me:track:outbound me:track:category="test" me:track:action="doubletap" me:track:label="Footer link">Outbound link with action</a>
+    <a href="#"
+    me:track:click
+    me:track:data='{"newData": "This is a new data", "OtherData": ["data1", "data2", "data3"]}'
+    id="tracked-link">A tracked link with data</a>
 
-    <div me:track:event me:track:category="test" me:track:action="click on list" me:track:label="Footer link">
-        <h3>Event tracking on click of any listed elements</h3>
-        <ul>
-            <li me:track:event me:track:category="list">list 1</li>
-            <li>list 2</li>
-            <li>list 3</li>
-        </ul>
-    </div>
+    <button id="removeEvents">Remove Events</a>
 </body>
 </html>
