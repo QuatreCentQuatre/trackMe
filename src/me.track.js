@@ -3,7 +3,7 @@
  * Library that let you easily track
  *
  * Version :
- *  - 1.0.3
+ *  - 1.0.4
  *
  * Supported Libraries :
  * 	- google analytics old tag
@@ -265,24 +265,39 @@
 	 * @access  public
 	 *
 	 */
-	proto.event = function(category, action, label, callback) {
+	proto.event = function(category, action, label, callback, nonInteraction) {
 		if (!callback) {
             if (this.debug) {console.info(this.__debugName, "event :: {category:'" + category + "', action:'" + action + "', label:'" + label + "'}");}
         }
 
 		if(window.dataLayer){
-			dataLayer.push({'event': 'GAEvent', 'eventCategory': category, 'eventAction': action, 'eventLabel': label});
+			var dataLayerData = {
+				'event': 'GAEvent',
+                'eventCategory': category,
+                'eventAction': action,
+                'eventLabel': label
+		    }
+
+            if (nonInteraction) { dataLayerData['nonInteraction'] = true; }
+
+			dataLayer.push(dataLayerData);
 		} else if (window.gtag) {
-			gtag('event', action, {
+			var gtagData = {
 				'event_category': category,
-				'event_label': label
-			});
+				'event_label': label,
+			};
+
+			if (nonInteraction) { gtagData['non_interaction'] = true; }
+
+			gtag('event', action, gtagData);
 		} else if (window._gaq) {
 			if (callback) {_gaq.push(['_trackEvent', category, action, label, {'hitCallback':callback}]);}
 			else {_gaq.push(['_trackEvent', category, action, label]);}
 		} else if (window.ga) {
-			if (callback) {ga('send', 'event', category, action, label, {'hitCallback':callback});}
-			else {ga('send', 'event', category, action, label);}
+			if (callback && nonInteraction) { ga('send', 'event', category, action, label, { 'hitCallback': callback }, { 'nonInteraction': 1 }); }
+			else if (callback) { ga('send', 'event', category, action, label, { 'hitCallback': callback }); }
+			else if (nonInteraction) { ga('send', 'event', category, action, label, { 'nonInteraction': 1 }); }
+			else { ga('send', 'event', category, action, label); }
 		}
 
 		return this;
