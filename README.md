@@ -1,5 +1,7 @@
 # TrackMe
 
+IMPORTANT NOTE: This repository has been archived and migrated to Bitbucket.
+
 Library that let you easily track click events with custom data. It set defaults Canadian properties too for Google 
 Analytics.
 ---
